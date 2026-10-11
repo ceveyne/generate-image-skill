@@ -30,4 +30,4 @@ Attachments the user added to the chat are referenced by their filename (basenam
 
 ## Related skills
 
-`image-display` (installed alongside this plugin) explains how to verify whether a generated image/video is actually visible to you and to the user on this client.
+**Required reading before presenting any result:** `image-display` (installed alongside this plugin) is the backbone for every image/video workflow on this client — it explains how to verify whether a generated image/video is actually visible to you and to the user, which is not automatic and not the same thing.
