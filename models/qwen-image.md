@@ -1,4 +1,4 @@
-# Qwen-Image — Prompt Guide (2512 · Edit 2509 · Edit 2511 · 2.1)
+# Qwen-Image — Prompt Guide (2512 · Edit 2509 · Edit 2511 · 2.1 · 2.1 Turbo)
 
 **Priority: TIER 1 (Qwen-Image-2.1) and TIER 2 (2512/2509/2511 — older, partly finicky)**
 
@@ -8,6 +8,7 @@
 | `image2image.auto` | `qwen_image_edit_2509_q6p.ckpt` | Edit (older version, less consistent) |
 | `edit.qwen-image`, `image2image.custom`, `image2image.qwen-image` | `qwen_image_edit_2511_q6p.ckpt` | Edit (better consistency, lighting control, geometric reasoning) |
 | `text2image.qwen-image-2.1`, `image2image.qwen-image-2.1`, `edit.qwen-image-2.1` | `qwen_image_2.1_q6p.ckpt` | **Unified T2I + Edit**, up to 10 refs, transparency, local editing |
+| `text2image.qwen-image-2.1-turbo`, `image2image.qwen-image-2.1-turbo`, `edit.qwen-image-2.1-turbo` | `qwen_image_2.1_turbo_q6p.ckpt` | Same model, architecture and capabilities as 2.1 (10 refs, transparency, local editing), accelerated to 8 steps |
 
 **Prompt language:** English **or Chinese** (both first-class, mixing within a prompt is allowed).
 
@@ -18,7 +19,7 @@
 1. **Natural-language, detail-rich prose** — no tag spam. The official examples are flowing descriptions.
 2. **In-image text = killer feature** (EN+ZH, multi-line, paragraphs): quote the texts plus **position, font, size, color, layout relationship** in the prose.
 3. **Edits understand simple direct instructions** ("Turn this cat into a dog") — thanks to the VLM text encoder, far more flexible than older guides suggest.
-4. **Choose 2.1 first for everything** — it unifies the capabilities of 2512 (T2I) and 2511 (edit) at equal or better quality, and is the superior choice for stable identities in edits. Older models only as alternatives; 2509 as last resort.
+4. **Choose 2.1 first for everything** — it unifies the capabilities of 2512 (T2I) and 2511 (edit) at equal or better quality, and is the superior choice for stable identities in edits. Older models only as alternatives; 2509 as last resort. Use **2.1 Turbo** when speed matters (8 steps, saved sampling schedule, CFG=1) — same architecture and capabilities as 2.1, so prompting rules below apply unchanged.
 5. Negative prompts: 2512 supports them, Edit-2511 officially runs with an empty one — in our pipeline negative prompts are fixed, so this does not affect selection.
 
 ---
@@ -88,5 +89,6 @@ prompt = "The magician bear is on the left, the alchemist bear is on the right, 
 | Edits with >1 reference, local regions, transparency, product fidelity | **2.1** (TIER 1) |
 | Edits with stable identity (person/product must stay the same) | **2.1** |
 | Classic 1-image edits, lighting control, IP preservation | **2.1** (2511 as alternative; 2509 last resort) |
+| Speed-critical generation/editing (8 steps instead of 40) | **2.1 Turbo** — identical capabilities to 2.1 |
 
-**Sources:** [Qwen-Image-2.1 Blog](https://qwen.ai/blog?id=qwen-image-2.1) · [Qwen-Image-2512 Model Card](https://huggingface.co/Qwen/Qwen-Image-2512) · [Qwen-Image Blog](https://qwenlm.github.io/blog/qwen-image/) · [Qwen-Image-Edit Blog](https://qwenlm.github.io/blog/qwen-image-edit/) · [Qwen-Image-Edit-2511 Model Card](https://huggingface.co/Qwen/Qwen-Image-Edit-2511) · accessed 2026-10-09
+**Sources:** [Qwen-Image-2.1 Blog](https://qwen.ai/blog?id=qwen-image-2.1) · [Qwen-Image-2512 Model Card](https://huggingface.co/Qwen/Qwen-Image-2512) · [Qwen-Image Blog](https://qwenlm.github.io/blog/qwen-image/) · [Qwen-Image-Edit Blog](https://qwenlm.github.io/blog/qwen-image-edit/) · [Qwen-Image-Edit-2511 Model Card](https://huggingface.co/Qwen/Qwen-Image-Edit-2511) · [Qwen-Image-2.1-Turbo Model Card](https://huggingface.co/Qwen/Qwen-Image-2.1-Turbo) · accessed 2026-10-12
