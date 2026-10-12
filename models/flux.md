@@ -2,11 +2,9 @@
 
 **Priority: TIER 3 (good-natured & robust)** · Difficulty: **low**
 
-| File                            | Preset                                             | Role                                                               |
-| ------------------------------- | -------------------------------------------------- | ------------------------------------------------------------------ |
-| `flux_2_klein_9b_kv_q6p.ckpt`   | `text2image.flux`, `image2image.flux`, `edit.auto` | 9B, Multi-Reference-KV variant (standard)                          |
-| `flux_2_klein_9b_q8p.ckpt`      | `edit.flux`                                        | 9B Edit                                                            |
-| `flux_2_klein_base_9b_q8p.ckpt` | `edit.custom`                                      | 9B **Base** (undistilled) — for fine control / fine-tuning context |
+| Model (`model` param) | Supported modes                     |
+| --------------------- | ----------------------------------- |
+| `flux`                | `text2image`, `image2image`, `edit` |
 
 **Prompt language:** English.
 
@@ -61,7 +59,7 @@ Textures, reflections, atmosphere: "Flaky croissant layers catching soft diffuse
 3. **One edit instruction per prompt** (or clearly separated, non-colliding ones).
 4. **Text in quotation marks** (also for inserting/changing text).
 5. **Multiple references: name the role of each image** ("Change image 1 to match the style of image 2").
-6. Base variant (`edit.custom`): undistilled, higher diversity — for fine control and as a fine-tuning base; results can differ (more robust in details, slower) than the distilled 9B presets.
+6. Base variant (model: `custom`, mode `edit`): undistilled, higher diversity — for fine control and as a fine-tuning base; results can differ (more robust in details, slower) than the distilled 9B default.
 
 ### Patterns
 

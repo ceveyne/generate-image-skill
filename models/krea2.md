@@ -2,10 +2,9 @@
 
 **Priority: TIER 1 (newest image model after H3/Qwen-2.1)** · Difficulty: **low–medium**
 
-| Preset             | Role                             |
-| ------------------ | -------------------------------- |
-| `text2image.krea`  | Text-to-Image, up to 2K          |
-| `image2image.krea` | Image-to-Image / style reference |
+| Model (`model` param) | Supported modes             |
+| --------------------- | --------------------------- |
+| `krea`                | `text2image`, `image2image` |
 
 **Prompt language:** English.
 
@@ -53,7 +52,7 @@ Rules:
 
 > The reference image carries the **visual language** (style, palette, texture, mood); the prompt describes the **new content.**
 
-- `image2image.krea`: input image = base/style source. The prompt phrases **what** should be created, not what the input looks like ("in the exact graphic style of the reference, but depicting...").
+- Mode `image2image`: input image = base/style source. The prompt phrases **what** should be created, not what the input looks like ("in the exact graphic style of the reference, but depicting...").
 - `strength` is fixed per model in our pipeline, not a per-task dial — don't expect to tune it per prompt.
 - Typical mistake: the prompt re-describes the reference image (content + style doubled) → confusion. Rule: **prompt = new scene, reference = how it looks.**
 - **Krea 2 has no `edit` mode.** For precise, regional editing (change one element, rest pixel-identical), use Qwen-Image-2.1/2511 or FLUX.2 klein instead.

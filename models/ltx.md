@@ -2,11 +2,9 @@
 
 **Priority: TIER 2 — the most difficult and finicky model in the stack** · Difficulty: **very high**
 
-| Preset | Role |
-|---|---|
-| `text2video.ltx` (+ `auto`/`custom`) | Text-to-Video (with audio) |
-| `image2video.ltx` (+ `auto`/`custom`) | Image-to-Video (first frame, with audio) |
-| `text2image.ltx` / `image2image.ltx` | LTX-2 can also do stills |
+| Model (`model` param) | Supported modes             |
+| --------------------- | --------------------------- |
+| `ltx`                 | `text2video`, `image2video` |
 
 **Prompt language:** English.
 
@@ -43,6 +41,7 @@
 - **Audio:** 2.3 has better audio quality → audio prompts are worth it: acoustic environment, voice qualities, ambient sounds.
 
 ### Official dialogue example (2.3: segments + direction)
+
 > A middle-aged man with greying hair speaks in a sad, slow-paced voice, "I remember after you kids came along..." He pauses and looks to the side, then continues, "your mom..." His eyes widen momentarily. He finishes with a cracking voice, "said something to me I never quite understood." The camera slowly zooms into his face. The audio is crisp with faint room tone.
 
 ---
@@ -62,35 +61,37 @@
 
 LTX derives pacing from prompt density — but physics stays physics. Plausibility reference:
 
-| Action | Plausible duration |
-|---|---|
-| Blink / head turn | 0.3 / 0.5–1 s |
-| Speech | ~2–3 words/s → one sentence ≈ 3–5 s |
-| Person: sit down/stand up, door open/close, pour coffee | 1–2 s |
-| Person walking | ~1.4 m/s normal → 5 m ≈ 3.5–4 s |
-| Car through the frame | 2–4 s |
-| Subtle push-in | 5–8 s |
+| Action                                                  | Plausible duration                  |
+| ------------------------------------------------------- | ----------------------------------- |
+| Blink / head turn                                       | 0.3 / 0.5–1 s                       |
+| Speech                                                  | ~2–3 words/s → one sentence ≈ 3–5 s |
+| Person: sit down/stand up, door open/close, pour coffee | 1–2 s                               |
+| Person walking                                          | ~1.4 m/s normal → 5 m ≈ 3.5–4 s     |
+| Car through the frame                                   | 2–4 s                               |
+| Subtle push-in                                          | 5–8 s                               |
 
 **Rules:**
+
 1. Beats + pauses ≤ ~90 % of clip duration — the rest is buffer.
 2. A sentence of dialogue needs its full breath in the prompt before the camera moves on.
 3. Packing more beats into a clip than physically fit → model "rushed through the action".
 
 ## What LTX 2.3 is good at / what to avoid
 
-| Good | Avoid |
-|---|---|
-| Kinetic compositions, shallow DoF, natural motion | On-screen text/logos (unreliable → do it in post) |
-| Emotional single-subject moments, facial acting | Chaos physics (dancing is OK) |
-| Atmosphere: fog, golden hour, rain, reflections | Overloaded frames (too many characters/actions) |
-| Clear camera language ("slow dolly in") | Contradictory lighting / contradictory instructions |
-| Speech & singing, multiple languages | |
+| Good                                              | Avoid                                               |
+| ------------------------------------------------- | --------------------------------------------------- |
+| Kinetic compositions, shallow DoF, natural motion | On-screen text/logos (unreliable → do it in post)   |
+| Emotional single-subject moments, facial acting   | Chaos physics (dancing is OK)                       |
+| Atmosphere: fog, golden hour, rain, reflections   | Overloaded frames (too many characters/actions)     |
+| Clear camera language ("slow dolly in")           | Contradictory lighting / contradictory instructions |
+| Speech & singing, multiple languages              |                                                     |
 
 **Common mistakes (official):** too vague ("A nice video of nature") · over-engineered (degree numbers) · duration mismatch (10 words for 10 s) · contradictory directions ("still lake with dramatic waves crashing").
 
 **Useful markers:** camera: follows, tracks, pans across, circles around, tilts upward, pushes in/pulls back, overhead, handheld, over-the-shoulder, wide establishing, static frame · film: film grain, lens flares, slow motion, time-lapse, freeze-frame, fade in/out · sound: whisper/mutter/shout, "resonant voice with gravitas", "forest ambience with birds".
 
 **Do / Don't:**
+
 - ✅ Prose paragraph, present tense, physical cues, quoted dialogue segments, cut named in prose, prompt length ≈ clip length
 - ❌ Shot lists/sluglines without a prose cut, numeric specifications, emotion labels, re-describing the start image in i2v, foreign tag syntax (don't copy Kling/Seedance formats unverified)
 

@@ -2,6 +2,11 @@
 
 **Priority: TIER 1 (newest video model, strongest all-rounder)** · Difficulty: **high** (most rigid syntax in the stack)
 
+| Model (`model` param) | Supported modes             |
+| --------------------- | --------------------------- |
+| `minimax`             | `text2video`, `image2video` |
+| `minimax-ref`         | `text2video`, `image2video` |
+
 **Prompt language:** English. Dialogue/lyrics/on-screen text: verbatim in original language (11 stably supported dialogue languages: EN, DE, FR, ES, IT, PT, RU, AR, ZH, JA, KO).
 
 ---
@@ -10,34 +15,35 @@
 
 H3 is released as **two task-specific checkpoints**. The semantics of input images differ completely:
 
-| | `minimax` presets — **FL2VA** | `minimax-ref` presets — **Ref2VA** |
-|---|---|---|
-| File | `minimax_h3_fl2va_q6p.ckpt` | `minimax_h3_ref2va_q6p.ckpt` |
-| What input images are | **Actual frames** — anchored to a timecode in the target video | **References** — identity, style, scene, motion, camera, voice, storyboard, edit source |
-| Accepted inputs | 0, 1, or 2 images | ≤9 images · ≤3 videos (2–15 s each, ≤15 s total) · ≤3 audio (2–15 s each, ≤15 s total, always alongside an image/video) · **≤12 files total mixed** |
-| Modes | T2V · I2V first frame (canvas) · I2V last frame · I2V first+last (canvas + moodboard) | T2V · Reference-to-Video (character/scene/style/motion/camera/voice/storyboard) · video editing · video continuation |
-| Prompt format | Instruction line + 3 core fields | 6 sections (see Ref2VA guide below) |
-| Never | Use 3+ images or reference-video/audio inputs (unsupported by this checkpoint) | Rely on images as exact frame anchors without declaring them as `<Picture N>` anchors |
+|                       | `minimax` — **FL2VA**                                                                 | `minimax-ref` — **Ref2VA**                                                                                                                          |
+| --------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File                  | `minimax_h3_fl2va_q6p.ckpt`                                                           | `minimax_h3_ref2va_q6p.ckpt`                                                                                                                        |
+| What input images are | **Actual frames** — anchored to a timecode in the target video                        | **References** — identity, style, scene, motion, camera, voice, storyboard, edit source                                                             |
+| Accepted inputs       | 0, 1, or 2 images                                                                     | ≤9 images · ≤3 videos (2–15 s each, ≤15 s total) · ≤3 audio (2–15 s each, ≤15 s total, always alongside an image/video) · **≤12 files total mixed** |
+| Modes                 | T2V · I2V first frame (canvas) · I2V last frame · I2V first+last (canvas + moodboard) | T2V · Reference-to-Video (character/scene/style/motion/camera/voice/storyboard) · video editing · video continuation                                |
+| Prompt format         | Instruction line + 3 core fields                                                      | 6 sections (see Ref2VA guide below)                                                                                                                 |
+| Never                 | Use 3+ images or reference-video/audio inputs (unsupported by this checkpoint)        | Rely on images as exact frame anchors without declaring them as `<Picture N>` anchors                                                               |
 
 ### Hard Limits (official, model + API — same for open weights)
 
-| Item | Limit |
-|---|---|
-| **Output duration** | **4–15 seconds, integer values only** → no long-form beyond 15 s; multi-shot must fit inside it |
-| Output resolution | 768P (open weights); 2K only via hosted H3-Regenerate-2K pass |
-| Frame rate / audio | 24 fps · 32 kHz stereo |
-| First/last-frame images | 0, 1, or 2; width/height 256–5760 px; aspect ratio 2:5 – 5:2 |
-| Reference images | **≤ 9** (our "4" is a pipeline choice = 1 canvas + moodboard slots, **not** a model limit) |
-| Reference videos | ≤3 clips, 2–15 s each, ≤15 s total |
-| Reference audio | ≤3 clips, 2–15 s each, ≤15 s total |
-| Mixed inputs | ≤12 files across all types |
-| Prompt length | ≤ 7000 characters |
+| Item                    | Limit                                                                                           |
+| ----------------------- | ----------------------------------------------------------------------------------------------- |
+| **Output duration**     | **4–15 seconds, integer values only** → no long-form beyond 15 s; multi-shot must fit inside it |
+| Output resolution       | 768P (open weights); 2K only via hosted H3-Regenerate-2K pass                                   |
+| Frame rate / audio      | 24 fps · 32 kHz stereo                                                                          |
+| First/last-frame images | 0, 1, or 2; width/height 256–5760 px; aspect ratio 2:5 – 5:2                                    |
+| Reference images        | **≤ 9** (our "4" is a pipeline choice = 1 canvas + moodboard slots, **not** a model limit)      |
+| Reference videos        | ≤3 clips, 2–15 s each, ≤15 s total                                                              |
+| Reference audio         | ≤3 clips, 2–15 s each, ≤15 s total                                                              |
+| Mixed inputs            | ≤12 files across all types                                                                      |
+| Prompt length           | ≤ 7000 characters                                                                               |
 
 ---
 
-## Part A — FL2VA (the `minimax` presets)
+## Part A — FL2VA (model: `minimax`)
 
 ### In 30 seconds
+
 1. Final prompt = rigid structure: optional instruction line (always line 1 + one blank line), then **exactly three core fields** in fixed order.
 2. Deviations from the syntax (wrong instruction line, missing field, wrong order) are the #1 failure mode — **check against the templates in this file before generating.**
 3. `integrated_multimodal_description` is the main body: everything visible/audible along the timeline, shot by shot.
@@ -45,6 +51,7 @@ H3 is released as **two task-specific checkpoints**. The semantics of input imag
 5. On-screen text always in double English quotes, original text verbatim.
 
 ### The three core fields (order is mandatory)
+
 ```text
 integrated_multimodal_description: [Shot 1] ...
 
@@ -52,23 +59,26 @@ overall_soundscape: ...
 
 non_diegetic_music: ...
 ```
-| Field | Content | Rules |
-|---|---|---|
-| `integrated_multimodal_description` | Visuals, actions, shots, speakers, dialogue, singing, diegetic audio along the timeline | Open `[Shot 1]` with style + composition: `[Shot 1] Live-action, cinematic, a medium-wide shot frames...` · Styles: Cinematic, live-action, 2D-animated, 3D CG, claymation, watercolor, vintage film |
-| `overall_soundscape` | Ambience, physical action sounds, non-verbal human sounds (rain, footsteps, breathing, laughter) | 1–4 sentences, one paragraph. Do **not** repeat dialogue/singing/diegetic music here. `N/A` only if complete silence was explicitly requested |
-| `non_diegetic_music` | Music only the audience hears | 1–3 sentences: instrumentation, tempo, rhythm, dynamics. No abstract mood words. `N/A` if none |
+
+| Field                               | Content                                                                                          | Rules                                                                                                                                                                                                |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `integrated_multimodal_description` | Visuals, actions, shots, speakers, dialogue, singing, diegetic audio along the timeline          | Open `[Shot 1]` with style + composition: `[Shot 1] Live-action, cinematic, a medium-wide shot frames...` · Styles: Cinematic, live-action, 2D-animated, 3D CG, claymation, watercolor, vintage film |
+| `overall_soundscape`                | Ambience, physical action sounds, non-verbal human sounds (rain, footsteps, breathing, laughter) | 1–4 sentences, one paragraph. Do **not** repeat dialogue/singing/diegetic music here. `N/A` only if complete silence was explicitly requested                                                        |
+| `non_diegetic_music`                | Music only the audience hears                                                                    | 1–3 sentences: instrumentation, tempo, rhythm, dynamics. No abstract mood words. `N/A` if none                                                                                                       |
 
 ### Instruction line (mode-specific, use verbatim)
-| Mode | First line of the prompt |
-|---|---|
-| **T2VA** | none — start directly with the three fields |
-| **I2VA** (first frame) | `For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.` |
+
+| Mode                     | First line of the prompt                                                                                                                                                                                               |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **T2VA**                 | none — start directly with the three fields                                                                                                                                                                            |
+| **I2VA** (first frame)   | `For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.`                                                                                                        |
 | **FL2VA** (first + last) | `How the reference pictures align with the target video — Picture 1 (from Shot 1) aligns with the 0.00-second mark of the target video; Picture 2 (from Shot N) aligns with the S.SS-second mark of the target video.` |
-| **L2VA** (last frame) | `How the reference pictures align with the target video — <Picture 1> (from [Shot N]) aligns with the S.SS-second mark of the target video.` |
+| **L2VA** (last frame)    | `How the reference pictures align with the target video — <Picture 1> (from [Shot N]) aligns with the S.SS-second mark of the target video.`                                                                           |
 
 `N` = index of the final shot, `S.SS` = effective video duration with **exactly two decimals** (e.g. `8.00`).
 
 ### Shot rules
+
 - Shot 1: **no** timestamp. Later shots: `[Shot 2] At 00:03.500, the camera cuts to...` — cut times strictly increasing, inside the video duration.
 - Cut phrasing: „the camera cuts to", „the shot transitions to", „the shot changes to". Cross-dissolve/fade/wipe only on explicit request.
 - A cut must bring **new information** (subject, space, state, viewpoint, time). Only slight distance/angle change → camera motion instead of a cut.
@@ -78,6 +88,7 @@ non_diegetic_music: ...
   - `The camera holds a static shot as the runner exits the frame.`
 
 ### Speakers, dialogue, singing
+
 - Speaker ID (S1, S2…) + identity **outside** `<d>`; inside the block only language tag + verbatim content (every word and punctuation mark preserved — no translation, no rephrasing):
   `The young woman with a quiet, breathy voice (S1) says: <d>[English] I get off at the next station.</d>`
 - Establish speakers stably on first appearance: age, gender, on/off-screen, pitch, timbre, rate, accent.
@@ -85,10 +96,12 @@ non_diegetic_music: ...
 - Dialogue crossing a cut: `<scenetrans>` at both points + „continues seamlessly across the cut". Speech truncated at video end: `<cutoff>`.
 
 ### On-screen text
+
 Signs, banners, neon, subtitles: original text **verbatim** in double English quotes.
 `A red neon sign reading "营业中" glows above the doorway.`
 
 ### Image↔Prompt contract (FL2VA)
+
 > The reference carries the **identity**, the prompt carries the **action and the path.**
 
 - **I2VA:** `<Picture 1>` **IS** the actual frame at 0.00 s and belongs to `[Shot 1]`. Structure: **first-frame anchor → action onset → continuous development → result/reaction.** First confirm style, subjects, composition, scene anchors of the image, then describe what happens next. Character identity, clothing, colors, key objects, spatial relationships must stay consistent.
@@ -96,6 +109,7 @@ Signs, banners, neon, subtitles: original text **verbatim** in double English qu
 - **L2VA:** infer a plausible preceding state → explicit action/transition path → gradual convergence → landing exactly on the image in the final shot.
 
 ### Official I2VA example (complete)
+
 ```text
 For the target video, at 0.00 seconds into the target video, <Picture 1> (from [Shot 1]) is fully referenced.
 
@@ -107,6 +121,7 @@ non_diegetic_music: Sustained cello notes at a slow tempo with widely spaced pia
 ```
 
 ### Official FL2VA example (8 s, single shot)
+
 ```text
 How the reference pictures align with the target video — Picture 1 (from Shot 1) aligns with the 0.00-second mark of the target video; Picture 2 (from Shot 1) aligns with the 8.00-second mark of the target video.
 
@@ -115,27 +130,29 @@ integrated_multimodal_description: [Shot 1] Live-action, cinematic, a rain-soake
 
 ---
 
-## Part B — Ref2VA (the `minimax-ref` presets)
+## Part B — Ref2VA (model: `minimax-ref`)
 
 > Official guide: `VIDEO_PROMPT_WRITING_GUIDE_ref_en.md` (same HF repo). It defines the full-reference rewrite format (the Context Intermediate Representation H3-Base consumes). MiniMax strongly recommends running H3-Context-IR or following this guide to build your own context preprocessing.
 
 ### The six sections (fixed order)
-| # | Section | Purpose |
-|---|---|---|
-| 1 | `subject_definitions` | Define referenced content + its reference labels |
-| 2 | `summary` | Task type, target video, main reference relationships (one short paragraph) |
-| 3 | `retention_analysis` | How each referenced item is preserved / transferred / copied / referenced (one line per label) |
-| 4 | `detailed_description` | Visuals, actions, shots, sound, dialogue in **playback order** (the main body) |
-| 5 | `overall_soundscape` | Ambience + physical sounds (same rules as FL2VA) |
-| 6 | `non_diegetic_music` | Audience-only score (same rules as FL2VA) |
+
+| #   | Section                | Purpose                                                                                        |
+| --- | ---------------------- | ---------------------------------------------------------------------------------------------- |
+| 1   | `subject_definitions`  | Define referenced content + its reference labels                                               |
+| 2   | `summary`              | Task type, target video, main reference relationships (one short paragraph)                    |
+| 3   | `retention_analysis`   | How each referenced item is preserved / transferred / copied / referenced (one line per label) |
+| 4   | `detailed_description` | Visuals, actions, shots, sound, dialogue in **playback order** (the main body)                 |
+| 5   | `overall_soundscape`   | Ambience + physical sounds (same rules as FL2VA)                                               |
+| 6   | `non_diegetic_music`   | Audience-only score (same rules as FL2VA)                                                      |
 
 ### The four reference label types
-| Label | Meaning |
-|---|---|
+
+| Label         | Meaning                                                                                                                                           |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `<Subject N>` | Reusable visible content abstracted from reference assets: people, animals, objects, scenes, clothing, props, styles, actions, expressions, poses |
-| `<Picture N>` | A reference image used as a concrete **target frame or shot-planning anchor** (first frame, keyframe, last frame, storyboard) |
-| `<Video N>` | A reference video providing a **whole-video** relationship: edit source, continuation start, or camera/cut/rhythm/temporal structure |
-| `<Audio N>` | An audio signal that is copied or referenced (timbre, music style, dialogue content, rhythm) |
+| `<Picture N>` | A reference image used as a concrete **target frame or shot-planning anchor** (first frame, keyframe, last frame, storyboard)                     |
+| `<Video N>`   | A reference video providing a **whole-video** relationship: edit source, continuation start, or camera/cut/rhythm/temporal structure              |
+| `<Audio N>`   | An audio signal that is copied or referenced (timbre, music style, dialogue content, rhythm)                                                      |
 
 Rules: a label keeps the **same meaning across all sections**. One subject may come from multiple assets; one asset may provide multiple subjects. If `<Picture N>`/`<Video N>` only identifies the source of another item, cite it inside that item's definition — no separate line. `<Video N>` and `<Audio N>` are numbered **independently** (same source video may be `<Video 1>` and `<Audio 2>`).
 
@@ -149,7 +166,9 @@ Rules: a label keeps the **same meaning across all sections**. One subject may c
 ```
 
 ### `summary` — task-type prefix
+
 Start with the bracketed task type, chosen by the actual role of each reference:
+
 - `[reference generation]` — asset guides character/scene/style/action/camera/storyboard without being a concrete frame or the edited source
 - `[video editing]` — a reference video is directly edited (then: „The target video is an edited version of `<Video 1>`.")
 - `[video continuation]` — continues from the end of a source video
@@ -159,6 +178,7 @@ Start with the bracketed task type, chosen by the actual role of each reference:
 Do **not** introduce new labels in the summary. A reference video providing only camera/cuts/rhythm → `reference generation`, not `video editing`.
 
 ### `retention_analysis` — fixed relationship markers
+
 One line per label:
 | Visible (`<Subject N>` / `<Picture N>` / `<Video N>`) | Audio (`<Audio N>`) |
 |---|---|
@@ -173,9 +193,11 @@ One line per label:
 <Video 1> (cut and pacing structure): weak_reference - ...
 <Audio 2>: reference - the target speaker follows <Audio 2>'s voice timbre and measured delivery without copying the original signal.
 ```
+
 Choose markers only within the role defined in `subject_definitions`; new actions/backgrounds/plot in the target are **not** fidelity losses. No `(Sx)` in this section.
 
 ### `detailed_description` — the main body
+
 - Same shot/camera/speaker/dialogue mechanics as FL2VA (`[Shot 1]` no timestamp, `[Shot N] At MM:SS.mmm`, `<d>` blocks, `(Sx)` IDs, `<scenetrans>`/`<cutoff>`).
 - Differences: main field is `detailed_description` (not `integrated_multimodal_description`); **style is established in 1–2 English sentences BEFORE `[Shot 1]`**; reference labels are inserted at first appearance and reused without redefinition.
 - **Length: 350–500 English words** for generation tasks; dialogue-dense content prioritizes fitting the complete spoken timeline over word count. Editing tasks scale with source complexity.
@@ -186,6 +208,7 @@ Choose markers only within the role defined in `subject_definitions`; new action
 - If only timbre/rhythm/emotion is referenced — **do not carry the original dialogue over** into the target.
 
 ### Image↔Prompt contract (Ref2VA)
+
 > References carry **attributes** (identity, look, motion, voice, style), the prompt carries the **new scene, the composition, and what to preserve.**
 
 1. **Every reference gets exactly one clear role**, named explicitly: identity / clothing / product / setting / style / motion / camera / timing / voice / sound. (Unassigned roles → model copies the wrong part of the image.)
@@ -196,6 +219,7 @@ Choose markers only within the role defined in `subject_definitions`; new action
 6. Voice referencing: map the voice of a reference video/audio to one character, keep the same speaker ID.
 
 ### Simplified mode (practical, fewer references)
+
 For 1–3 reference images in local runs, natural language works (per ComfyUI official templates): identify assets as `Image 1`, `Image 2`, …; give each one role; describe the target video in playback order. Use the full 6-section format when references, editing, or audio relationships get complex — it is what the official pipeline (H3-Context-IR) produces.
 
 ---
@@ -204,19 +228,20 @@ For 1–3 reference images in local runs, natural language works (per ComfyUI of
 
 Cut times and action pacing must be **physically plausible**. Reference values:
 
-| Action | Plausible duration |
-|---|---|
-| Blink / head turn | 0.3 / 0.5–1 s |
-| Speech | ~2–3 words/s → one sentence ≈ 3–5 s |
-| Sit down / stand up | 1–2 s |
-| Door open/close, pour coffee, glass shattering | 1–2 s |
-| Person walking | ~1.4 m/s normal → 5 m ≈ 3.5–4 s |
-| Car through frame | 2–4 s |
-| Subtle push-in / slow pan | 5–8 s |
+| Action                                         | Plausible duration                  |
+| ---------------------------------------------- | ----------------------------------- |
+| Blink / head turn                              | 0.3 / 0.5–1 s                       |
+| Speech                                         | ~2–3 words/s → one sentence ≈ 3–5 s |
+| Sit down / stand up                            | 1–2 s                               |
+| Door open/close, pour coffee, glass shattering | 1–2 s                               |
+| Person walking                                 | ~1.4 m/s normal → 5 m ≈ 3.5–4 s     |
+| Car through frame                              | 2–4 s                               |
+| Subtle push-in / slow pan                      | 5–8 s                               |
 
 Rules: (1) sum of beats + pauses ≤ ~90 % of clip duration. (2) Place cut times so every shot has room for its full action (no 0.5 s cut while a 4 s sentence is still running). (3) Dialogue length = words ÷ ~2.5; `<cutoff>` if a line intentionally ends with the video. (4) Max 15 s total — plan multi-shot density accordingly (2–4 shots is comfortable).
 
 **Do / Don't (both checkpoints):**
+
 - ✅ Fixed field order · verbatim instruction lines · verbatim dialogue in `<d>` · camera = type+amplitude+speed · explicit reference roles (Ref2VA)
 - ❌ Free-form text without fields · dialogue outside `<d>` · translated dialogue · `mood: epic` in `non_diegetic_music` · cut times outside duration · >9 reference images · expecting >15 s output
 
