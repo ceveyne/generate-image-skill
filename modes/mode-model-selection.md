@@ -28,17 +28,17 @@
 
 The agent selects `mode` and `model`. Match the available material to the modes each model supports (model-specific details live in the §6 family files).
 
-| Available material                        | Mode                              | Models                                                                                                       |
-| ----------------------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| Text only                                 | `text2image`                      | `krea` · `z-image` · `flux` · `qwen-image` · `qwen-image-2.1` · `qwen-image-2.1-turbo` · `ltx`               |
-| Text only                                 | `text2video`                      | `ltx` · `minimax` · `minimax-ref`                                                                            |
-| One image                                 | `image2image`                     | `krea` · `z-image` · `flux` · `qwen-image` · `qwen-image-2.1` · `qwen-image-2.1-turbo` · `ltx`               |
-| One image                                 | `edit`                            | **`flux` (default)** · `qwen-image-2.1` / `qwen-image-2.1-turbo` (identity-critical) · `qwen-image`          |
-| One image                                 | `image2video` (first frame)       | `ltx` · `minimax` · `minimax-ref`                                                                            |
-| 1 canvas + 1 moodboard image              | `image2video` (first+last)        | **`minimax` only** (images = actual start/end frames)                                                        |
-| Multiple reference images / video / audio | `edit` (multi-ref)                | `flux` (name each image's role) · `qwen-image-2.1` / `qwen-image-2.1-turbo` (up to 10)                       |
-| Multiple reference images / video / audio | `image2video` (references)        | **`minimax-ref` only** (character/scene/style/motion/camera/voice; ≤12 input files)                          |
-| Existing video                            | `image2video` (edit/continuation) | **`minimax-ref` only**                                                                                       |
+| Available material                        | Mode                              | Models                                                                                              |
+| ----------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Text only                                 | `text2image`                      | `krea` · `z-image` · `flux` · `qwen-image` · `qwen-image-2.1` · `qwen-image-2.1-turbo` · `ltx`      |
+| Text only                                 | `text2video`                      | `ltx` · `minimax` · `minimax-ref`                                                                   |
+| One image                                 | `image2image`                     | `krea` · `z-image` · `flux` · `qwen-image` · `ltx`                                                  |
+| One image                                 | `edit`                            | **`flux` (default)** · `qwen-image-2.1` / `qwen-image-2.1-turbo` (identity-critical) · `qwen-image` |
+| One image                                 | `image2video` (first frame)       | `ltx` · `minimax` · `minimax-ref`                                                                   |
+| 1 canvas + 1 moodboard image              | `image2video` (first+last)        | **`minimax` only** (images = actual start/end frames)                                               |
+| Multiple reference images / video / audio | `edit` (multi-ref)                | `flux` (name each image's role) · `qwen-image-2.1` / `qwen-image-2.1-turbo` (up to 10)              |
+| Multiple reference images / video / audio | `image2video` (references)        | **`minimax-ref` only** (character/scene/style/motion/camera/voice; ≤12 input files)                 |
+| Existing video                            | `image2video` (edit/continuation) | **`minimax-ref` only**                                                                              |
 
 ### MiniMax H3 mode map
 

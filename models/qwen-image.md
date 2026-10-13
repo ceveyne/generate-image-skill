@@ -5,8 +5,8 @@
 | Model (`model` param)  | Supported modes                     | Notes                                                                                                                            |
 | ---------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | `qwen-image`           | `text2image`, `image2image`, `edit` | Text-to-Image via 2512 checkpoint; edit/image2image via 2509 or 2511 checkpoint (strong text rendering / great edit consistency) |
-| `qwen-image-2.1`       | `text2image`, `image2image`, `edit` | Unified T2I + Edit, up to 10 refs, transparency, local editing                                                                   |
-| `qwen-image-2.1-turbo` | `text2image`, `image2image`, `edit` | Same architecture and capabilities as 2.1, accelerated to 8 steps                                                                |
+| `qwen-image-2.1`       | `text2image`, `edit`                | Unified T2I + Edit, up to 10 refs, transparency, local editing; no image2image (no viable strength<1 variant)                    |
+| `qwen-image-2.1-turbo` | `text2image`, `edit`                | Same architecture and capabilities as 2.1, accelerated to 8 steps; no image2image (no viable strength<1 variant)                 |
 
 **Prompt language:** English **or Chinese** (both first-class, mixing within a prompt is allowed).
 
