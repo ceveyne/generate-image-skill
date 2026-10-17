@@ -8,6 +8,8 @@
 >
 > - The agent selects **`mode` + `model`** — there is **no preset selection** (presets are an internal pipeline detail).
 > - The tool interface exposes only **`prompt`**; negative prompts are fixed by the pipeline. Models that ignore or need special negative prompts are therefore **not** a selection criterion here.
+>
+> **How to read the model notes:** The strengths and weaknesses described in this file and in the family files are generalizations from vendor documentation and typical results. They tell you where to _start_, not what a given render looks like. Treat them as a hypothesis before the render and as nothing at all after it: once an image exists, the image is the evidence, and your own reading of it decides — not what these documents say the model usually does. A model rated as weak at something can get it right, and a model rated as strong can get it wrong. Never describe a result by what the model is "known for", and never let the expected outcome stand in for the observed one.
 
 ---
 
