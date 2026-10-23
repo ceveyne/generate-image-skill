@@ -30,17 +30,19 @@
 
 The agent selects `mode` and `model`. Match the available material to the modes each model supports (model-specific details live in the §6 family files).
 
-| Available material                        | Mode                              | Models                                                                                              |
-| ----------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------------------------- |
-| Text only                                 | `text2image`                      | `krea` · `z-image` · `flux` · `qwen-image` · `qwen-image-2.1` · `qwen-image-2.1-turbo` · `ltx`      |
-| Text only                                 | `text2video`                      | `ltx` · `minimax` · `minimax-ref`                                                                   |
-| One image                                 | `image2image`                     | `krea` · `z-image` · `flux` · `qwen-image` · `ltx`                                                  |
-| One image                                 | `edit`                            | **`flux` (default)** · `qwen-image-2.1` / `qwen-image-2.1-turbo` (identity-critical) · `qwen-image` |
-| One image                                 | `image2video` (first frame)       | `ltx` · `minimax` · `minimax-ref`                                                                   |
-| 1 canvas + 1 moodboard image              | `image2video` (first+last)        | **`minimax` only** (images = actual start/end frames)                                               |
-| Multiple reference images / video / audio | `edit` (multi-ref)                | `flux` (name each image's role) · `qwen-image-2.1` / `qwen-image-2.1-turbo` (up to 10)              |
-| Multiple reference images / video / audio | `image2video` (references)        | **`minimax-ref` only** (character/scene/style/motion/camera/voice; ≤12 input files)                 |
-| Existing video                            | `image2video` (edit/continuation) | **`minimax-ref` only**                                                                              |
+| Available material                        | Mode                              | Models                                                                                                                                 |
+| ----------------------------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Text only                                 | `text2image`                      | `krea` · `z-image` · `flux-2` · `flux-3` · `qwen-image` · `qwen-image-2.1` · `qwen-image-2.1-turbo`                                  |
+| Text only                                 | `text2video`                      | `ltx` · `minimax` · `minimax-ref`                                                                                                      |
+| One image                                 | `image2image`                     | `krea` · `z-image` · `flux-2` · `flux-3` · `qwen-image`                                                                                |
+| One image                                 | `edit`                            | **`flux-2` (default)** · `flux-3` · `qwen-image-2.1` / `qwen-image-2.1-turbo` (identity-critical) · `qwen-image`                       |
+| One image                                 | `image2video` (first frame)       | `ltx` · `minimax` · `minimax-ref`                                                                                                      |
+| 1 canvas + 1 moodboard image              | `image2video` (first+last)        | **`minimax` only** (images = actual start/end frames)                                                                                  |
+| Multiple reference images / video / audio | `edit` (multi-ref)                | `flux-3` (up to 10, name each image's role) · `flux-2` (name each image's role) · `qwen-image-2.1` / `qwen-image-2.1-turbo` (up to 10) |
+| Multiple reference images / video / audio | `image2video` (references)        | **`minimax-ref` only** (character/scene/style/motion/camera/voice; ≤12 input files)                                                    |
+| Existing video                            | `image2video` (edit/continuation) | **`minimax-ref` only**                                                                                                                 |
+
+> Video models (`ltx`, `minimax`, `minimax-ref`) can technically render stills in `text2image` / `image2image` and are accepted if requested, but are **not recommended** for it — use an image model above unless the user explicitly asks for a video model.
 
 ### MiniMax H3 mode map
 
@@ -54,13 +56,13 @@ The agent selects `mode` and `model`. Match the available material to the modes 
 
 ## 4. Which model fits best? — Decision rules
 
-**TIER 1 — newest, try first:** MiniMax H3 (video) · Qwen-Image-2.1 (unified image + edit) · Krea 2 (text2image, most look-flexible)
+**TIER 1 — newest, try first:** MiniMax H3 (video) · FLUX.3 klein (text2image + edit, top prompt adherence) · Qwen-Image-2.1 (unified image + edit) · Krea 2 (text2image, most look-flexible)
 **TIER 2 — capable but finicky / legacy:** LTX 2.3 (video) · older Qwen generation 2512/2509/2511 — **superseded by 2.1**, which unifies the capabilities of 2512 (T2I) and 2511 (edit) at equal or better quality
 **TIER 3 — good-natured & robust, safe fallbacks:** Z-Image Turbo · FLUX.2 klein (**default for `mode: edit`**)
 
 ### text2image: look dominates
 
-For `text2image`, the **desired look** overrides all technical decision criteria — it is a **design preference, not a quality marker**. Most look-flexible model: **`krea`** — it can do "beauty shots" like `z-image` **and** "rough" looks like `flux`. Only pick a different T2I model for hard technical needs (text rendering, sub-second speed, fixed aesthetic).
+For `text2image`, the **desired look** overrides all technical decision criteria — it is a **design preference, not a quality marker**. Most look-flexible model: **`krea`** — it can do "beauty shots" like `z-image` **and** "rough" looks like `flux-2`. Only pick a different T2I model for hard technical needs (text rendering, sub-second speed, fixed aesthetic).
 
 ### Strong case → model
 
@@ -71,28 +73,31 @@ For `text2image`, the **desired look** overrides all technical decision criteria
 | Bring one still to life (first frame only)                                               | **`minimax`**                      | `ltx`                    | FL2VA first-frame mode                                                                |
 | Instruction-based editing of an existing video                                           | **`minimax-ref`**                  | –                        | Only Ref2VA does video editing/continuation                                           |
 | Atmospheric cinematic, multi-shot cuts, singing/speech, camera language                  | **`ltx`**                          | `minimax`                | Best camera/cut language; 2.3 prompt-faithful — but finicky                           |
-| Text2image where **look/aesthetic** is the driver                                        | **`krea`**                         | `z-image` / `flux`       | Most look-flexible: beauty shots **and** rough looks in one model                     |
+| Text2image where **look/aesthetic** is the driver                                        | **`krea`**                         | `z-image` / `flux-2`     | Most look-flexible: beauty shots **and** rough looks in one model                     |
+| Text2image with **complex multi-element scenes** where exact prompt adherence matters    | **`flux-3`**                       | `qwen-image-2.1`         | Top prompt adherence; needs a full scene caption (or the prompt upsampler)            |
 | Text2image with heavy **in-image text** (posters, infographics, slides, bilingual EN/ZH) | **`qwen-image-2.1`**               | `qwen-image` (2512)      | Best text rendering in the stack; 2.1 = 2512 capabilities at equal/better quality     |
-| **Default `edit`** (style, object swap, "change X keep Y")                               | **`flux`**                         | `qwen-image-2.1-turbo`   | FLUX is the edit default: excellent prompt adherence + speed                          |
-| **Edit with stable identity** (person/product must stay the same)                        | **`qwen-image-2.1-turbo`**         | `flux`                   | 2.1 is the superior choice for identity-preserving edits                              |
-| **Edit: pixel fidelity / regional / multi-ref (≤10) / transparency**                     | **`qwen-image-2.1`**               | `flux`                   | 2.1: circles/masks, fidelity, up to 10 refs                                           |
+| **Default `edit`** (style, object swap, "change X keep Y")                               | **`flux-2`**                       | `flux-3`                 | FLUX.2 is the edit default: good prompt adherence + speed                             |
+| **Edit with highest prompt adherence** (complex or multi-part instructions)              | **`flux-3`**                       | `flux-2`                 | FLUX.3: top prompt adherence, edit quality at least on par with Qwen-Image-2.1        |
+| **Edit with stable identity** (person/product must stay the same)                        | **`qwen-image-2.1-turbo`**         | `flux-3`                 | 2.1 is the superior choice for identity-preserving edits                              |
+| **Edit: pixel fidelity / regional / multi-ref (≤10) / transparency**                     | **`qwen-image-2.1`**               | `flux-3`                 | 2.1: circles/masks, fidelity, up to 10 refs (`flux-3` also takes up to 10 refs)       |
 | Style discovery, illustration, graphic design, fast variants                             | **`krea`**                         | `z-image`                | Turbo: fast, aesthetics-strong, 2K                                                    |
-| Robust T2I with few demands, sub-second                                                  | **`z-image`**                      | `flux`                   | Hard to break, fastest                                                                |
+| Robust T2I with few demands, sub-second                                                  | **`z-image`**                      | `flux-2`                 | Hard to break, fastest                                                                |
 
 ### Strengths / weaknesses — all models
 
-| Model                      | Strengths                                                                                                                                                                      | Weaknesses / traps                                                                                                                    |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
-| **MiniMax H3 (FL2VA)**     | Exact frame anchoring (first/last/both), native stereo audio, multi-shot ≤15 s, strong instruction following                                                                   | **Most rigid syntax** (instruction line + 3 fixed fields, `<d>` tags) — deviations → failure; most work per prompt; **15 s hard cap** |
-| **MiniMax H3 (Ref2VA)**    | Reference generation (character/scene/style/motion/camera/voice), video editing & continuation, ≤9 images + 3 videos + 3 audios                                                | Full 6-section format is heavy; simplified natural language only for 1–3 refs; frame-anchoring is **not** its mode                    |
-| **Qwen-Image-2.1 (Turbo)** | Unified T2I+Edit, **supersedes 2512+2511 at equal/better quality**, best identity stability in edits, up to 10 refs, local regions (circles/masks), native transparency        | **Many refs × many variants = time multiplies** (plan batch sizes); prompt controls transparency (can surprise)                       |
-| **Qwen-Image-2512**        | Top text rendering (EN+ZH, layouts, slides)                                                                                                                                    | T2I only (no edit); superseded by 2.1 — alternative when 2.1 misbehaves                                                               |
-| **Qwen-Image-Edit 2511**   | Consistent 1-image edits, lighting control, IP preservation, bilingual text edit                                                                                               | Older; multi-ref & regions weaker than 2.1; superseded by 2.1                                                                         |
-| **Qwen-Image-Edit 2509**   | Simple edit instructions                                                                                                                                                       | **Finickiest** edit variant (consistency issues) — last resort only                                                                   |
-| **Krea 2 (Turbo)**         | **Most look-flexible T2I** (beauty shots → rough looks), fastest style exploration, expressive illustration, 2K, good text rendering, official LLM expander                    | Turbo quality (iteration, not final); pixel-fidelity edits are not its thing                                                          |
-| **LTX 2.3**                | Best camera/cut language, multi-shot in prose, strong audio (speech/singing), 2.3 much more prompt-faithful                                                                    | **Finickiest model:** prompt length must match clip length, no numeric specs, on-screen text unreliable, chaotic physics = artifacts  |
-| **Z-Image Turbo**          | Sub-second, robust, bilingual text rendering, excellent instruction following, "beauty shot" aesthetic                                                                         | 512-token limit; little variation on identical prompt                                                                                 |
-| **FLUX.2 klein**           | **Default for `mode: edit`** — best prompt adherence + speed in the stack; robust, strong lighting understanding, multi-reference edits with roles, Base variant for fine work | **No prompt upsampling** — vague stays vague; Base ≠ distilled (behaves differently)                                                  |
+| Model                      | Strengths                                                                                                                                                               | Weaknesses / traps                                                                                                                                 |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **MiniMax H3 (FL2VA)**     | Exact frame anchoring (first/last/both), native stereo audio, multi-shot ≤15 s, strong instruction following                                                            | **Most rigid syntax** (instruction line + 3 fixed fields, `<d>` tags) — deviations → failure; most work per prompt; **15 s hard cap**              |
+| **MiniMax H3 (Ref2VA)**    | Reference generation (character/scene/style/motion/camera/voice), video editing & continuation, ≤9 images + 3 videos + 3 audios                                         | Full 6-section format is heavy; simplified natural language only for 1–3 refs; frame-anchoring is **not** its mode                                 |
+| **Qwen-Image-2.1 (Turbo)** | Unified T2I+Edit, **supersedes 2512+2511 at equal/better quality**, best identity stability in edits, up to 10 refs, local regions (circles/masks), native transparency | **Many refs × many variants = time multiplies** (plan batch sizes); prompt controls transparency (can surprise)                                    |
+| **Qwen-Image-2512**        | Top text rendering (EN+ZH, layouts, slides)                                                                                                                             | T2I only (no edit); superseded by 2.1 — alternative when 2.1 misbehaves                                                                            |
+| **Qwen-Image-Edit 2511**   | Consistent 1-image edits, lighting control, IP preservation, bilingual text edit                                                                                        | Older; multi-ref & regions weaker than 2.1; superseded by 2.1                                                                                      |
+| **Qwen-Image-Edit 2509**   | Simple edit instructions                                                                                                                                                | **Finickiest** edit variant (consistency issues) — last resort only                                                                                |
+| **Krea 2 (Turbo)**         | **Most look-flexible T2I** (beauty shots → rough looks), fastest style exploration, expressive illustration, 2K, good text rendering, official LLM expander             | Turbo quality (iteration, not final); pixel-fidelity edits are not its thing                                                                       |
+| **LTX 2.3**                | Best camera/cut language, multi-shot in prose, strong audio (speech/singing), 2.3 much more prompt-faithful                                                             | **Finickiest model:** prompt length must match clip length, no numeric specs, on-screen text unreliable, chaotic physics = artifacts               |
+| **Z-Image Turbo**          | Sub-second, robust, bilingual text rendering, excellent instruction following, "beauty shot" aesthetic                                                                  | 512-token limit; little variation on identical prompt                                                                                              |
+| **FLUX.3 klein**           | Top prompt adherence, edit quality at least on par with Qwen-Image-2.1, multi-reference edits with roles (up to 10 refs), in-image text, distilled (16 steps)           | Needs full scene captions (short prompts give generic output; relies on the prompt upsampler when enabled); no bounding-box layout in our pipeline |
+| **FLUX.2 klein**           | **Default for `mode: edit`** — fast; robust, strong lighting understanding, multi-reference edits with roles, Base variant for fine work; predecessor of FLUX.3 klein   | **No prompt upsampling** — vague stays vague; Base ≠ distilled (behaves differently)                                                               |
 
 ---
 
@@ -104,7 +109,7 @@ Universal principle for all image-based modes — **the material carries identit
 
 1. **Never** re-describe the source image in the prompt (the encoders see it; double descriptions collide).
 2. Prompt = **delta**: what changes, target state, and (for fidelity models) what explicitly stays ("change X, keep Y").
-3. With **multiple** references: **name each image's role in the prompt** (FLUX: "image 1 / image 2"; Qwen: "the bear on the left…"; MiniMax: `<Picture N>`/`<Subject N>` + time anchor or role).
+3. With **multiple** references: **name each image's role in the prompt** (FLUX.2 / FLUX.3: "image 1 / image 2"; Qwen: "the bear on the left…"; MiniMax: `<Picture N>`/`<Subject N>` + time anchor or role).
 4. For **regional** edits: separate region and action (Qwen: colored circles + instruction per color).
 5. **One** coherent change per prompt; avoid contradictory delta instructions.
 
@@ -147,6 +152,7 @@ Agents typically underestimate **how long actions take in the real world** — a
 | Krea 2 (Turbo)                  | [../models/krea2.md](../models/krea2.md)           |
 | LTX 2.3                         | [../models/ltx.md](../models/ltx.md)               |
 | Z-Image Turbo                   | [../models/z-image.md](../models/z-image.md)       |
+| FLUX.3 klein                    | [../models/flux-3.md](../models/flux-3.md)         |
 | FLUX.2 klein                    | [../models/flux.md](../models/flux.md)             |
 
 All content from official vendor sources (docs/model cards/blogs, accessed 2026-10-09/10); links in the respective family files.

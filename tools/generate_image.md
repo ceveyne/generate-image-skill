@@ -13,7 +13,7 @@ Pick a model with the `model` parameter (e.g. `qwen-image-2.1`); the full preset
 - **width** — Width in pixels (max 2048). Has sensible default.
 - **height** — Height in pixels (max 2048). Has sensible default.
 - **imageFormat** — Aspect ratio shorthand. Override if context suggests. '16:9' yields 1024×576 (video-optimized).
-- **model** — Model preset. One of: auto (default), z-image, krea, qwen-image, qwen-image-2.1, flux, ltx, minimax, minimax-ref, custom, or a user-defined entry from custom_configs.json. 'auto' selects the best model for the mode. Video modes (text2video/image2video) require a video-capable model: ltx, minimax, or minimax-ref.
+- **model** — Model preset. One of: auto (default), z-image, krea, qwen-image, qwen-image-2.1, flux-2, flux-3, ltx, minimax, minimax-ref, custom, or a user-defined entry from custom_configs.json. 'auto' selects the best model for the mode. Video modes (text2video/image2video) require a video-capable model: ltx, minimax, or minimax-ref.
 - **variants** — Number of images (1-4). Default is 1.
 - **numFrames** — Number of video frames. Must be a multiple of 32 (or multiple of 32 + 1). Default: 1 (image). Silently ignored for non-video modes.
 - **mode** — Generation mode. 'text2video'/'image2video' require a video-capable model (e.g. 'ltx'). Required when sources exist.

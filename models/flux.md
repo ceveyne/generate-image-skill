@@ -2,9 +2,9 @@
 
 **Priority: TIER 3 (good-natured & robust)** · Difficulty: **low**
 
-| Model (`model` param) | Supported modes                     |
-| --------------------- | ----------------------------------- |
-| `flux`                | `text2image`, `image2image`, `edit` |
+| Model (`model` param)   | Supported modes                     |
+| ----------------------- | ----------------------------------- |
+| `flux-2` (alias `flux`) | `text2image`, `image2image`, `edit` |
 
 **Prompt language:** English.
 

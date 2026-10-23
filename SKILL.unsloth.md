@@ -19,7 +19,7 @@ This skill documents only the tools of the `generate-image` plugin. The other im
 
 ## Modes & models
 
-Before choosing `mode`/`model` in `generate_image`, read [`modes/mode-model-selection.md`](modes/mode-model-selection.md) — it routes goal → mode → model in one page. Per-model prompting guides (official vendor docs, sources cited) live under `models/`: [`flux.md`](models/flux.md), [`krea2.md`](models/krea2.md), [`ltx.md`](models/ltx.md), [`minimax.md`](models/minimax.md), [`qwen-image.md`](models/qwen-image.md), [`z-image.md`](models/z-image.md).
+Before choosing `mode`/`model` in `generate_image`, read [`modes/mode-model-selection.md`](modes/mode-model-selection.md) — it routes goal → mode → model in one page. Per-model prompting guides (official vendor docs, sources cited) live under `models/`: [`flux.md`](models/flux.md), [`flux-3.md`](models/flux-3.md), [`krea2.md`](models/krea2.md), [`ltx.md`](models/ltx.md), [`minimax.md`](models/minimax.md), [`qwen-image.md`](models/qwen-image.md), [`z-image.md`](models/z-image.md).
 
 ## Background renders and sweeps
 
@@ -33,7 +33,7 @@ Then retrieve **each** render with `request_progress(requestId)`:
 - Once it has finished, the same call returns the result a normal `generate_image` call would have returned, including the image.
 - To drop a render you no longer want, call `request_progress(requestId, cancel: true)`. A queued render is removed, a running one is aborted.
 
-Background results are never shown automatically and are easy to forget: the task is only done when every `requestId` has been retrieved, checked and presented as `image-display` describes. `request_progress` without a `requestId` lists the status of all background renders and contains no images — use it only to recover a `requestId` you lost, not to collect results.
+Background results are never shown automatically and are easy to forget: the task is only done when every `requestId` has been retrieved, checked and presented as `image-display` describes. `request_progress` without a `requestId` is the standard way to see what is currently running in this chat: it lists the status of all background renders, but contains no images and never replaces retrieving a result. Pass a `requestId` for the exact state of one render — current status, and for a finished one its result with generation details and image.
 
 ## Chat working directory
 
