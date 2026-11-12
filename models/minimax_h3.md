@@ -4,8 +4,10 @@
 
 | Model (`model` param) | Supported modes             |
 | --------------------- | --------------------------- |
-| `minimax`             | `text2video`, `image2video` |
-| `minimax-ref`         | `text2video`, `image2video` |
+| `MiniMax H3`          | `text2video`, `image2video` |
+| `MiniMax H3 [ref2va]` | `text2video`, `image2video` |
+
+Both belong to one model family; the two checkpoints differ in semantics, so name the one you need (`MiniMax H3` = FL2VA frames, `MiniMax H3 [ref2va]` = Ref2VA references).
 
 **Prompt language:** English. Dialogue/lyrics/on-screen text: verbatim in original language (11 stably supported dialogue languages: EN, DE, FR, ES, IT, PT, RU, AR, ZH, JA, KO).
 
@@ -15,7 +17,7 @@
 
 H3 is released as **two task-specific checkpoints**. The semantics of input images differ completely:
 
-|                       | `minimax` — **FL2VA**                                                                 | `minimax-ref` — **Ref2VA**                                                                                                                          |
+|                       | `MiniMax H3` — **FL2VA**                                                                 | `MiniMax H3 [ref2va]` — **Ref2VA**                                                                                                                          |
 | --------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | File                  | `minimax_h3_fl2va_q6p.ckpt`                                                           | `minimax_h3_ref2va_q6p.ckpt`                                                                                                                        |
 | What input images are | **Actual frames** — anchored to a timecode in the target video                        | **References** — identity, style, scene, motion, camera, voice, storyboard, edit source                                                             |
@@ -40,7 +42,7 @@ H3 is released as **two task-specific checkpoints**. The semantics of input imag
 
 ---
 
-## Part A — FL2VA (model: `minimax`)
+## Part A — FL2VA (model: `MiniMax H3`)
 
 ### In 30 seconds
 
@@ -130,7 +132,7 @@ integrated_multimodal_description: [Shot 1] Live-action, cinematic, a rain-soake
 
 ---
 
-## Part B — Ref2VA (model: `minimax-ref`)
+## Part B — Ref2VA (model: `MiniMax H3 [ref2va]`)
 
 > Official guide: `VIDEO_PROMPT_WRITING_GUIDE_ref_en.md` (same HF repo). It defines the full-reference rewrite format (the Context Intermediate Representation H3-Base consumes). MiniMax strongly recommends running H3-Context-IR or following this guide to build your own context preprocessing.
 

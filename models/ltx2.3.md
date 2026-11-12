@@ -4,7 +4,7 @@
 
 | Model (`model` param) | Supported modes             |
 | --------------------- | --------------------------- |
-| `ltx`                 | `text2video`, `image2video` |
+| `LTX-2.3`             | `text2video`, `image2video` |
 
 **Prompt language:** English.
 

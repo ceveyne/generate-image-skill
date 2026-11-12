@@ -13,13 +13,13 @@ This skill documents only the tools of the `generate-image` plugin. The other im
 
 | Tool               | File                                                     | Search keywords                                                                            |
 | ------------------ | -------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `generate_image`   | [`tools/generate_image.md`](tools/generate_image.md)     | text2image, image2image, edit, video, numFrames, model preset, canvas, moodboard, variants |
+| `generate_image`   | [`tools/generate_image.md`](tools/generate_image.md)     | text2image, image2image, edit, video, numFrames, model, canvas, moodboard, variants |
 | `upscale`          | [`tools/upscale.md`](tools/upscale.md)                   | resolution, scaleFactor, re-render, full canvas                                            |
 | `request_progress` | [`tools/request_progress.md`](tools/request_progress.md) | requestId, runInBackground, sweep, queue, progress, cancel, retrieve result                |
 
 ## Modes & models
 
-Before choosing `mode`/`model` in `generate_image`, read [`modes/mode-model-selection.md`](modes/mode-model-selection.md) — it routes goal → mode → model in one page. Per-model prompting guides (official vendor docs, sources cited) live under `models/`: [`flux.md`](models/flux.md), [`flux-3.md`](models/flux-3.md), [`krea2.md`](models/krea2.md), [`ltx.md`](models/ltx.md), [`minimax.md`](models/minimax.md), [`qwen-image.md`](models/qwen-image.md), [`z-image.md`](models/z-image.md).
+Before choosing `mode`/`model` in `generate_image`, read [`modes/mode-model-selection.md`](modes/mode-model-selection.md) — it routes goal → mode → model in one page. Per-model prompting guides (official vendor docs, sources cited) live under `models/`: [`flux2_9b.md`](models/flux2_9b.md), [`flux3_5b.md`](models/flux3_5b.md), [`krea_2.md`](models/krea_2.md), [`ltx2.3.md`](models/ltx2.3.md), [`minimax_h3.md`](models/minimax_h3.md), [`moss_image.md`](models/moss_image.md), [`qwen_image.md`](models/qwen_image.md), [`z_image.md`](models/z_image.md).
 
 ## Background renders and sweeps
 
@@ -29,11 +29,13 @@ Set `runInBackground: true` on `generate_image` and the call returns at once wit
 
 Then retrieve **each** render with `request_progress(requestId)`:
 
-- While it runs, you get its progress and remaining time. Do not call it again right away; do other work or wait for the user first.
+- While it is queued or running, this only repeats the status; use the overview (`request_progress` without `requestId`) instead.
 - Once it has finished, the same call returns the result a normal `generate_image` call would have returned, including the image.
 - To drop a render you no longer want, call `request_progress(requestId, cancel: true)`. A queued render is removed, a running one is aborted.
 
-Background results are never shown automatically and are easy to forget: the task is only done when every `requestId` has been retrieved, checked and presented as `image-display` describes. `request_progress` without a `requestId` is the standard way to see what is currently running in this chat: it lists the status of all background renders, but contains no images and never replaces retrieving a result. Pass a `requestId` for the exact state of one render — current status, and for a finished one its result with generation details and image.
+Background results are never shown automatically and are easy to forget: the task is only done when every `requestId` has been retrieved, checked and presented as `image-display` describes. `request_progress` without a `requestId` is the recommended way to see what is currently running in this chat: it lists the status of all background renders, but contains no images and never replaces retrieving a result.
+
+Renders run one after another. A `queued` render waiting for an earlier one is expected, not an error.
 
 ## Chat working directory
 

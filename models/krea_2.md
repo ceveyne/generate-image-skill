@@ -4,7 +4,9 @@
 
 | Model (`model` param) | Supported modes             |
 | --------------------- | --------------------------- |
-| `krea`                | `text2image`, `image2image` |
+| `Krea 2`              | `text2image`, `image2image` |
+
+**Default for `image2image`:** `Krea 2` (Turbo, 8 steps, fixed strength 0.925) is the model used when `model` is `auto`.
 
 **Prompt language:** English.
 

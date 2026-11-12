@@ -4,9 +4,9 @@
 
 | Model (`model` param)  | Supported modes                     | Notes                                                                                                                            |
 | ---------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `qwen-image`           | `text2image`, `image2image`, `edit` | Text-to-Image via 2512 checkpoint; edit/image2image via 2509 or 2511 checkpoint (strong text rendering / great edit consistency) |
-| `qwen-image-2.1`       | `text2image`, `edit`                | Unified T2I + Edit, up to 10 refs, transparency, local editing; no image2image (no viable strength<1 variant)                    |
-| `qwen-image-2.1-turbo` | `text2image`, `edit`                | Same architecture and capabilities as 2.1, accelerated to 8 steps; no image2image (no viable strength<1 variant)                 |
+| `Qwen Image 2.1`       | `text2image`, `edit`                | **Qwen Image 2.1 Turbo** (the name picks the fast variant first): unified T2I + Edit, up to 10 refs, transparency, local editing, 8 steps; no image2image (no viable strength<1 variant). The non-turbo 2.1 model (more steps, same capabilities) is only reachable by its file name `qwen_image_2.1_*.ckpt` |
+| `Qwen Image`           | `text2image`, `image2image`, `edit` | Text-to-Image via the 2512 checkpoint (strong text rendering); `image2image` and `edit` via the Qwen Image Edit 2511 checkpoint (great edit consistency); not the `image2image` default (that is `Krea 2`) |
+| `Qwen Image Edit`      | `image2image`, `edit`               | Alias for the Edit checkpoints (2511/2509); `Qwen Image` already reaches them with our tuned settings; `image2image` = one source image, no moodboard, strength below 1 (tuned preset) |
 
 **Prompt language:** English **or Chinese** (both first-class, mixing within a prompt is allowed).
 

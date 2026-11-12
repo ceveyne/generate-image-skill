@@ -4,7 +4,7 @@
 
 | Model (`model` param) | Supported modes             |
 | --------------------- | --------------------------- |
-| `z-image`             | `text2image`, `image2image` |
+| `Z Image`             | `text2image`, `image2image` |
 
 Note: **Z-Image-Edit is a separate model and not installed** — use Qwen or FLUX for regional edits.
 **Prompt language:** English **or Chinese** — both first-class, excellent bilingual text rendering.

@@ -4,7 +4,7 @@
 
 | Model (`model` param)     | Supported modes                     |
 | ------------------------- | ----------------------------------- |
-| `flux-3` (`flux-3-klein`) | `text2image`, `image2image`, `edit` |
+| `FLUX.3`                  | `text2image`, `edit`                |
 
 **Prompt language:** English.
 
@@ -93,6 +93,6 @@ Full single-element recolor with explicit preservation:
 ### Not available in this pipeline
 
 - **Bounding-box layout** (BFL feature: JSON box list appended to the caption, `<id>` tags, `from`/`src_bbox`/`tgt_bbox` for box edits) has no parameter in `generate_image`. Do not write box syntax into prompts.
-- The distilled Klein runs 16 steps without CFG (fixed by the preset). The undistilled **Base** variant (50 steps, CFG) is for fine-tuning/research and is only reachable via `model: custom`.
+- The distilled Klein runs 16 steps without CFG (fixed by the preset). The undistilled **Base** variant (50 steps, CFG) is for fine-tuning/research and is only reachable by its model name `FLUX.3 [klein] 5.6B Base`.
 
 **Sources:** [FLUX 3 Image Klein — model card (BFL, Hugging Face)](https://huggingface.co/black-forest-labs/flux-3-image-klein) · [FLUX 3 Text to Image (BFL docs)](https://docs.bfl.ai/flux_3/flux3_image_generate) · [FLUX 3 Image Editing (BFL docs)](https://docs.bfl.ai/flux_3/flux3_image_layout) · [black-forest-labs/flux-3-image-klein (reference code)](https://github.com/black-forest-labs/flux-3-image-klein) · accessed 2026-10-19.

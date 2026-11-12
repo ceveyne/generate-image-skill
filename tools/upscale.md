@@ -13,6 +13,6 @@ For `model` choice, see the per-model prompting guides under [`../models/`](../m
 - **width** — Output width in pixels (max 2048). Has sensible default.
 - **height** — Output height in pixels (max 2048). Has sensible default.
 - **scaleFactor** — Scale factor applied to the canvas dimensions. E.g. 2 doubles the resolution. Mutually exclusive with width/height.
-- **model** — Model preset for image2image re-rendering. Default 'auto'.
+- **model** — Model for the re-rendering. Default `auto`; otherwise a name from the list of installed models in the tool schema, a model name or a file name.
 - **canvas** — Source image. An attachment the user added to the chat is referenced by its filename (basename) — or, on clients that support attachment handles (see SKILL.md), by its `aN` handle. Generated images, pictures and variants use notations 'i3', 'p1', 'v2'. Also accepts a filename in the scratchpad folder or an absolute path. Tolerates single-item array input.
 - **imageFormat** — Target image format / aspect ratio preset (e.g. '16:9', 'portrait'). Resolved to concrete pixel dimensions.

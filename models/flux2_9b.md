@@ -4,7 +4,7 @@
 
 | Model (`model` param)   | Supported modes                     |
 | ----------------------- | ----------------------------------- |
-| `flux-2` (alias `flux`) | `text2image`, `image2image`, `edit` |
+| `FLUX.2`                  | `text2image`, `image2image`, `edit` |
 
 **Prompt language:** English.
 
@@ -59,7 +59,7 @@ Textures, reflections, atmosphere: "Flaky croissant layers catching soft diffuse
 3. **One edit instruction per prompt** (or clearly separated, non-colliding ones).
 4. **Text in quotation marks** (also for inserting/changing text).
 5. **Multiple references: name the role of each image** ("Change image 1 to match the style of image 2").
-6. Base variant (model: `custom`, mode `edit`): undistilled, higher diversity — for fine control and as a fine-tuning base; results can differ (more robust in details, slower) than the distilled 9B default.
+6. Base variant (model name `FLUX.2 [klein] 9B Base`, mode `edit`): undistilled, higher diversity — for fine control and as a fine-tuning base; results can differ (more robust in details, slower) than the distilled 9B default.
 
 ### Patterns
 
